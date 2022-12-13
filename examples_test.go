@@ -59,8 +59,8 @@ func ExampleDaysInMonth() {
 	// Output: 30
 }
 
-func ExampleHebrewToRD() {
-	rataDie := hdate.HebrewToRD(5769, hdate.Cheshvan, 15)
+func ExampleToRD() {
+	rataDie := hdate.ToRD(5769, hdate.Cheshvan, 15)
 	fmt.Println(rataDie)
 	// Output: 733359
 }

@@ -55,11 +55,11 @@ func GetYahrzeit(hyear int, date HDate) (HDate, error) {
 	if date.Month() == Cheshvan && date.Day() == 30 && !LongCheshvan(date.Year()+1) {
 		// If it's Heshvan 30 it depends on the first anniversary;
 		// if that was not Heshvan 30, use the day before Kislev 1.
-		date = FromRD(HebrewToRD(hyear, Kislev, 1) - 1)
+		date = FromRD(ToRD(hyear, Kislev, 1) - 1)
 	} else if date.Month() == Kislev && date.Day() == 30 && ShortKislev(date.Year()+1) {
 		// If it's Kislev 30 it depends on the first anniversary;
 		// if that was not Kislev 30, use the day before Teveth 1.
-		date = FromRD(HebrewToRD(hyear, Tevet, 1) - 1)
+		date = FromRD(ToRD(hyear, Tevet, 1) - 1)
 	} else if date.Month() == Adar2 {
 		// If it's Adar II, use the same day in last month of year (Adar or Adar II).
 		date.month = HMonth(MonthsInYear(hyear))

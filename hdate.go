@@ -123,7 +123,8 @@ type HDate struct {
 	abs   int64  // R.D. absolute date
 }
 
-const epoch int64 = -1373428
+// Epoch is the Hebrew Calendar epoch using R.D. Rata Die numbers
+const Epoch int64 = -1373428
 
 // Avg year length in the cycle (19 solar years with 235 lunar months)
 const avgHebrewYearDays float64 = 365.24682220597794
@@ -221,13 +222,13 @@ func elapsedDays0(year int) int64 {
 	}
 }
 
-// Converts Hebrew date to R.D. (Rata Die) fixed days.
+// ToRD converts Hebrew date to R.D. (Rata Die) fixed days.
 // R.D. 1 is the imaginary date Monday, January 1, 1 on the Gregorian Calendar.
 //
 // Note also that R.D. = Julian Date − 1,721,424.5
 //
 // https://en.wikipedia.org/wiki/Rata_Die
-func HebrewToRD(year int, month HMonth, day int) int64 {
+func ToRD(year int, month HMonth, day int) int64 {
 	tempabs := int64(day)
 	if month < Tishrei {
 		monthsInYear := HMonth(MonthsInYear(year))
@@ -242,7 +243,7 @@ func HebrewToRD(year int, month HMonth, day int) int64 {
 			tempabs += int64(DaysInMonth(m, year))
 		}
 	}
-	return epoch + elapsedDays(year) + tempabs - 1
+	return Epoch + elapsedDays(year) + tempabs - 1
 }
 
 // Creates a new HDate from year, Hebrew month, and day of month.
@@ -271,32 +272,32 @@ func New(year int, month HMonth, day int) HDate {
 }
 
 func newYear(year int) int64 {
-	return epoch + elapsedDays(year)
+	return Epoch + elapsedDays(year)
 }
 
 // Converts absolute Rata Die days to Hebrew date.
 //
 // Panics if rataDie is before the Hebrew epoch.
 func FromRD(rataDie int64) HDate {
-	if rataDie <= epoch {
+	if rataDie <= Epoch {
 		panic("invalid R.D. date " + strconv.FormatInt(rataDie, 10))
 	}
-	approx := float64(rataDie-epoch) / avgHebrewYearDays
+	approx := float64(rataDie-Epoch) / avgHebrewYearDays
 	year := int(approx)
 	for newYear(year) <= rataDie {
 		year++
 	}
 	year--
 	var month HMonth
-	if rataDie < HebrewToRD(year, Nisan, 1) {
+	if rataDie < ToRD(year, Nisan, 1) {
 		month = Tishrei
 	} else {
 		month = Nisan
 	}
-	for rataDie > HebrewToRD(year, month, DaysInMonth(month, year)) {
+	for rataDie > ToRD(year, month, DaysInMonth(month, year)) {
 		month++
 	}
-	day := 1 + rataDie - HebrewToRD(year, month, 1)
+	day := 1 + rataDie - ToRD(year, month, 1)
 	return HDate{year: year, month: month, day: int(day), abs: rataDie}
 }
 
@@ -318,7 +319,7 @@ func FromTime(t time.Time) HDate {
 // R.D. 1 is the imaginary date Monday, January 1, 1 on the Gregorian Calendar.
 func (hd *HDate) Abs() int64 {
 	if hd.abs == 0 {
-		hd.abs = HebrewToRD(hd.Year(), hd.Month(), hd.Day())
+		hd.abs = ToRD(hd.Year(), hd.Month(), hd.Day())
 	}
 	return hd.abs
 }
