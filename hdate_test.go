@@ -2,6 +2,7 @@ package hdate_test
 
 import (
 	"encoding/json"
+	"errors"
 	"testing"
 	"time"
 
@@ -26,6 +27,8 @@ func TestHebrew2RD(t *testing.T) {
 	assert.Equal(int64(732017), hdate.ToRD(5765, hdate.Adar2, 1))
 	assert.Equal(int64(732038), hdate.ToRD(5765, hdate.Adar2, 22))
 	assert.Equal(int64(732046), hdate.ToRD(5765, hdate.Nisan, 1))
+	assert.Equal(int64(710347), hdate.ToRD(5706, hdate.Kislev, 7))
+	assert.Equal(int64(336499), hdate.ToRD(4682, hdate.Nisan, 15))
 }
 
 func TestRD2Hebrew(t *testing.T) {
@@ -93,12 +96,29 @@ func TestMonthFromName(t *testing.T) {
 		{"Iyyar", hdate.Iyyar},
 		{"Iyar", hdate.Iyyar},
 		{"tammuz", hdate.Tamuz},
+		{"Si", hdate.Sivan},
+		{"Sh", hdate.Shvat},
 	}
 	for _, item := range toTest {
 		month, err := hdate.MonthFromName(item.s)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, item.m, month)
 	}
+}
+
+func TestMonthFromNameEmpty(t *testing.T) {
+	month, err := hdate.MonthFromName("")
+	assert.Equal(t, hdate.HMonth(0), month)
+	assert.Equal(t, errors.New("unable to parse month name"), err)
+}
+
+func TestMonthFromName1Char(t *testing.T) {
+	month, err := hdate.MonthFromName("i")
+	assert.Equal(t, hdate.Iyyar, month)
+	assert.Equal(t, nil, err)
+	month, err = hdate.MonthFromName("S")
+	assert.Equal(t, hdate.HMonth(0), month)
+	assert.Equal(t, errors.New("unable to parse month name"), err)
 }
 
 func TestDaysInHebYear(t *testing.T) {

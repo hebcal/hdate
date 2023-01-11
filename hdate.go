@@ -444,9 +444,16 @@ With the exception of Adar 1/Adar 2, Hebrew months are unique to their second le
 func MonthFromName(monthName string) (HMonth, error) {
 	str := s.ToLower(monthName)
 	runes := []rune(str)
+	strlen := len(runes)
+	var r1 rune
+	if strlen == 0 {
+		return 0, errors.New("unable to parse month name")
+	} else if strlen > 1 {
+		r1 = runes[1]
+	}
 	switch runes[0] {
 	case 'n', 'נ':
-		if runes[1] == 'o' {
+		if r1 == 'o' {
 			break /* this catches "november" */
 		}
 		return Nisan, nil
@@ -459,7 +466,7 @@ func MonthFromName(monthName string) (HMonth, error) {
 	case 'k', 'כ':
 		return Kislev, nil
 	case 's':
-		switch runes[1] {
+		switch r1 {
 		case 'i':
 			return Sivan, nil
 		case 'h':
@@ -468,7 +475,7 @@ func MonthFromName(monthName string) (HMonth, error) {
 			break
 		}
 	case 't':
-		switch runes[1] {
+		switch r1 {
 		case 'a':
 			return Tamuz, nil
 		case 'i':
@@ -477,7 +484,7 @@ func MonthFromName(monthName string) (HMonth, error) {
 			return Tevet, nil
 		}
 	case 'a':
-		switch runes[1] {
+		switch r1 {
 		case 'v':
 			return Av, nil
 		case 'd':
@@ -494,7 +501,7 @@ func MonthFromName(monthName string) (HMonth, error) {
 	case 'ש':
 		return Shvat, nil
 	case 'א':
-		switch runes[1] {
+		switch r1 {
 		case 'ב':
 			return Av, nil
 		case 'ד':
@@ -509,7 +516,7 @@ func MonthFromName(monthName string) (HMonth, error) {
 			return Elul, nil
 		}
 	case 'ת':
-		switch runes[1] {
+		switch r1 {
 		case 'מ':
 			return Tamuz, nil
 		case 'ש':
