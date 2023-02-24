@@ -1,6 +1,7 @@
 package hdate_test
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -87,4 +88,15 @@ func TestBirthday(t *testing.T) {
 			assert.Equal(expected[i], actual, name+" "+birthday.String())
 		}
 	}
+}
+
+func TestBirthdayOnOrBefore(t *testing.T) {
+	assert := assert.New(t)
+	orig := hdate.New(5753, hdate.Adar1, 9)
+	birthday, err := hdate.GetBirthdayOrAnniversary(5753, orig)
+	assert.Equal(err, nil)
+	assert.Equal(birthday, orig)
+	birthday, err = hdate.GetBirthdayOrAnniversary(5752, orig)
+	assert.Equal(birthday, hdate.HDate{})
+	assert.Equal(err, errors.New("year 5752 occurs before original date"))
 }

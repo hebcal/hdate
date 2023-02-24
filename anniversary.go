@@ -102,10 +102,13 @@ has his birthday postponed until the first of the following month in
 years where that day does not occur. [Calendrical Calculations p. 111]
 */
 func GetBirthdayOrAnniversary(hyear int, date HDate) (HDate, error) {
-	if hyear <= date.Year() {
-		return HDate{}, errors.New("year " + strconv.Itoa(hyear) + " occurs on or before original date")
+	origYear := date.Year()
+	if hyear == origYear {
+		return date, nil
+	} else if hyear < origYear {
+		return HDate{}, errors.New("year " + strconv.Itoa(hyear) + " occurs before original date")
 	}
-	isOrigLeap := IsLeapYear(date.Year())
+	isOrigLeap := IsLeapYear(origYear)
 	month := date.Month()
 	day := date.Day()
 	if (month == Adar1 && !isOrigLeap) || (month == Adar2 && isOrigLeap) {
