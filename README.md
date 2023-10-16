@@ -19,6 +19,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/hebcal/hdate"
 )
@@ -28,5 +29,9 @@ func main() {
 	year, month, day := hd.Greg()
 	fmt.Println(year, month, day)
 	// Output: 2005 April 2
+
+	hd2 := hdate.FromGregorian(2008, time.November, 13)
+	fmt.Println(hd2)
+	// Output: 15 Cheshvan 5769
 }
 ```
