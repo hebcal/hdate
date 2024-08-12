@@ -85,20 +85,21 @@ var longMonthNames = []string{
 	"Nisan",
 }
 
-var heMonthNames = map[HMonth]string{
-	Adar1:    "אַדָר א׳",
-	Adar2:    "אַדָר ב׳",
-	Av:       "אָב",
-	Cheshvan: "חֶשְׁוָן",
-	Elul:     "אֱלוּל",
-	Iyyar:    "אִיָיר",
-	Kislev:   "כִּסְלֵו",
-	Nisan:    "נִיסָן",
-	Shvat:    "שְׁבָט",
-	Sivan:    "סִיוָן",
-	Tamuz:    "תַּמּוּז",
-	Tevet:    "טֵבֵת",
-	Tishrei:  "תִשְׁרֵי",
+var heAdar = []string{"אַדָר", "אדר"}
+var heMonthNames = map[HMonth][]string{
+	Adar1:    {"אַדָר א׳", "אדר א׳"},
+	Adar2:    {"אַדָר ב׳", "אדר ב׳"},
+	Av:       {"אָב", "אב"},
+	Cheshvan: {"חֶשְׁוָן", "חשון"},
+	Elul:     {"אֱלוּל", "אלול"},
+	Iyyar:    {"אִיָיר", "אייר"},
+	Kislev:   {"כִּסְלֵו", "כסלו"},
+	Nisan:    {"נִיסָן", "ניסן"},
+	Shvat:    {"שְׁבָט", "שבט"},
+	Sivan:    {"סִיוָן", "סיון"},
+	Tamuz:    {"תַּמּוּז", "תמוז"},
+	Tevet:    {"טֵבֵת", "טבת"},
+	Tishrei:  {"תִשְׁרֵי", "תשרי"},
 }
 
 // String returns the English name of the month ("Nisan", "Iyyar", ...).
@@ -397,13 +398,19 @@ func (hd HDate) IsLeapYear() bool {
 // (e.g. "Tishrei", "Sh'vat", "Adar II").
 func (hd HDate) MonthName(locale string) string {
 	month := hd.Month()
-	if locale == "he" {
-		if month == Adar1 && !hd.IsLeapYear() {
-			return "אַדָר"
+	isAdar := month == Adar1 && !hd.IsLeapYear()
+	locale = s.ToLower(locale)
+	if locale == "he" || locale == "he-x-nonikud" {
+		idx := 0
+		if locale == "he-x-nonikud" {
+			idx = 1
 		}
-		return heMonthNames[month]
+		if isAdar {
+			return heAdar[idx]
+		}
+		return heMonthNames[month][idx]
 	}
-	if month == Adar1 && !hd.IsLeapYear() {
+	if isAdar {
 		return "Adar"
 	}
 	return month.String()

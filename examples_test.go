@@ -97,9 +97,11 @@ func ExampleHDate_MonthName() {
 	hd := hdate.New(5765, hdate.Adar2, 22)
 	fmt.Println(hd.MonthName("en"))
 	fmt.Println(hd.MonthName("he"))
+	fmt.Println(hd.MonthName("he-x-NoNikud"))
 	// Output:
 	// Adar II
 	// אַדָר ב׳
+	// אדר ב׳
 }
 
 func ExampleHDate_IsLeapYear() {

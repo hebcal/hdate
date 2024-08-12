@@ -60,8 +60,12 @@ func TestMonthNames2(t *testing.T) {
 	assert := assert.New(t)
 	hd := hdate.New(5782, hdate.Adar1, 15)
 	assert.Equal("Adar I", hd.MonthName("en"))
+	assert.Equal("אַדָר א׳", hd.MonthName("he"))
+	assert.Equal("אדר א׳", hd.MonthName("he-x-NoNikud"))
 	hd = hdate.New(5783, hdate.Adar1, 15)
 	assert.Equal("Adar", hd.MonthName("en"))
+	assert.Equal("אַדָר", hd.MonthName("he"))
+	assert.Equal("אדר", hd.MonthName("he-x-NoNikud"))
 }
 
 func TestAdar2ResetToAdar1(t *testing.T) {
