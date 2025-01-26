@@ -271,3 +271,12 @@ func TestHDateJsonUnMarshal(t *testing.T) {
 	assert.Equal(t, hdate.Kislev, hd.Month())
 	assert.Equal(t, 18, hd.Day())
 }
+
+func TestFromGregorian(t *testing.T) {
+	hd := hdate.FromGregorian(2008, time.November, 13)
+	assert.Equal(t, "15 Cheshvan 5769", hd.String())
+	hd = hdate.FromGregorian(1752, time.September, 14)
+	assert.Equal(t, "6 Tishrei 5513", hd.String())
+	hd = hdate.FromGregorian(1752, time.September, 2)
+	assert.Equal(t, "5 Tishrei 5513", hd.String())
+}
