@@ -308,6 +308,13 @@ func FromGregorian(year int, month time.Month, day int) HDate {
 	return FromRD(rataDie)
 }
 
+// Creates an HDate from Gregorian year, month and day,
+// using the Proleptic Gregorian calendar.
+func FromProlepticGregorian(year int, month time.Month, day int) HDate {
+	rataDie := greg.ProlepticToRD(year, month, day)
+	return FromRD(rataDie)
+}
+
 // Creates an HDate from a Time object. Hours, minutes and seconds are ignored.
 func FromTime(t time.Time) HDate {
 	year, month, day := t.Date()
@@ -348,6 +355,11 @@ func (hd HDate) DaysInMonth() int {
 // Converts this Hebrew Date to Gregorian year, month and day.
 func (hd HDate) Greg() (int, time.Month, int) {
 	return greg.FromRD(hd.Abs())
+}
+
+// Converts this Hebrew Date to Proleptic Gregorian year, month and day.
+func (hd HDate) ProlepticGreg() (int, time.Month, int) {
+	return greg.ProlepticFromRD(hd.Abs())
 }
 
 // Converts this Hebrew Date to a Gregorian time object.

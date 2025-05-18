@@ -254,6 +254,39 @@ func TestGreg(t *testing.T) {
 	assert.Equal(2005, gy)
 	assert.Equal(time.April, gm)
 	assert.Equal(2, gd)
+
+	hd = hdate.New(5513, hdate.Tishrei, 6)
+	gy, gm, gd = hd.Greg()
+	assert.Equal(1752, gy)
+	assert.Equal(time.September, gm)
+	assert.Equal(14, gd)
+
+	hd = hdate.New(5513, hdate.Tishrei, 5)
+	gy, gm, gd = hd.Greg()
+	assert.Equal(1752, gy)
+	assert.Equal(time.September, gm)
+	assert.Equal(2, gd)
+}
+
+func TestProlepticGreg(t *testing.T) {
+	assert := assert.New(t)
+	hd := hdate.New(5765, hdate.Adar2, 22)
+	gy, gm, gd := hd.ProlepticGreg()
+	assert.Equal(2005, gy)
+	assert.Equal(time.April, gm)
+	assert.Equal(2, gd)
+
+	hd = hdate.New(5513, hdate.Tishrei, 6)
+	gy, gm, gd = hd.ProlepticGreg()
+	assert.Equal(1752, gy)
+	assert.Equal(time.September, gm)
+	assert.Equal(14, gd)
+
+	hd = hdate.New(5513, hdate.Tishrei, 5)
+	gy, gm, gd = hd.ProlepticGreg()
+	assert.Equal(1752, gy)
+	assert.Equal(time.September, gm)
+	assert.Equal(13, gd)
 }
 
 func TestHDateJsonMarshal(t *testing.T) {
@@ -279,4 +312,17 @@ func TestFromGregorian(t *testing.T) {
 	assert.Equal(t, "6 Tishrei 5513", hd.String())
 	hd = hdate.FromGregorian(1752, time.September, 2)
 	assert.Equal(t, "5 Tishrei 5513", hd.String())
+}
+
+func TestFromProlepticGregorian(t *testing.T) {
+	hd := hdate.FromProlepticGregorian(2008, time.November, 13)
+	assert.Equal(t, "15 Cheshvan 5769", hd.String())
+	hd = hdate.FromProlepticGregorian(1752, time.September, 14)
+	assert.Equal(t, "6 Tishrei 5513", hd.String())
+	hd = hdate.FromProlepticGregorian(1752, time.September, 13)
+	assert.Equal(t, "5 Tishrei 5513", hd.String())
+	hd = hdate.FromProlepticGregorian(1752, time.September, 9)
+	assert.Equal(t, "1 Tishrei 5513", hd.String())
+	hd = hdate.FromProlepticGregorian(1752, time.September, 2)
+	assert.Equal(t, "23 Elul 5512", hd.String())
 }
