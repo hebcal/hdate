@@ -297,9 +297,9 @@ func TestHDateJsonMarshal(t *testing.T) {
 }
 
 func TestHDateJsonUnMarshal(t *testing.T) {
-	hdJson := `{"hy":5783,"hm":"Kislev","hd":18}`
+	hdJSON := `{"hy":5783,"hm":"Kislev","hd":18}`
 	var hd hdate.HDate
-	json.Unmarshal([]byte(hdJson), &hd)
+	json.Unmarshal([]byte(hdJSON), &hd)
 	assert.Equal(t, 5783, hd.Year())
 	assert.Equal(t, hdate.Kislev, hd.Month())
 	assert.Equal(t, 18, hd.Day())
