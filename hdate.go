@@ -30,7 +30,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/hebcal/greg"
@@ -175,28 +174,9 @@ func DaysInMonth(month HMonth, year int) int {
 	return 30
 }
 
-var (
-	edCacheMu sync.RWMutex
-	edCache   = make(map[int]int64)
-)
-
+// elapsedDays returns the number of days from the sunday prior to the start
+// of the Hebrew calendar to the mean conjunction of Tishrei in Hebrew year.
 func elapsedDays(year int) int64 {
-	edCacheMu.RLock()
-	days, ok := edCache[year]
-	edCacheMu.RUnlock()
-	if ok {
-		return days
-	}
-	days = elapsedDays0(year)
-	edCacheMu.Lock()
-	edCache[year] = days
-	edCacheMu.Unlock()
-	return days
-}
-
-// Days from sunday prior to start of Hebrew calendar to mean
-// conjunction of Tishrei in Hebrew YEAR
-func elapsedDays0(year int) int64 {
 	prevYear := int64(year) - 1
 	mElapsed := 235*(prevYear/19) + // Months in complete 19 year lunar (Metonic) cycles so far
 		12*(prevYear%19) + // Regular months in this cycle
