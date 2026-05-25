@@ -180,8 +180,8 @@ func DaysInMonth(month HMonth, year int) int {
 // access keeps it race-free at the same cost as a plain load on x86/arm.
 // Years outside [edCacheMin, edCacheMax] fall through to recompute.
 const (
-	edCacheMin = 3760
-	edCacheMax = 9999
+	edCacheMin = 5000
+	edCacheMax = 6999
 )
 
 var edCache [edCacheMax - edCacheMin + 1]atomic.Int32
