@@ -184,18 +184,18 @@ const (
 	edCacheMax = 6999
 )
 
-var edCache [edCacheMax - edCacheMin + 1]atomic.Int32
+var edCache [edCacheMax - edCacheMin + 1]int32
 
 // elapsedDays returns the number of days from the sunday prior to the start
 // of the Hebrew calendar to the mean conjunction of Tishrei in Hebrew year.
 func elapsedDays(year int) int64 {
 	if year >= edCacheMin && year <= edCacheMax {
 		idx := year - edCacheMin
-		if n := edCache[idx].Load(); n != 0 {
+		if n := atomic.LoadInt32(&edCache[idx]); n != 0 {
 			return int64(n)
 		}
 		v := elapsedDays0(year)
-		edCache[idx].Store(int32(v))
+		atomic.StoreInt32(&edCache[idx], int32(v))
 		return v
 	}
 	return elapsedDays0(year)
