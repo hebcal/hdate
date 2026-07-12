@@ -299,10 +299,46 @@ func TestHDateJsonMarshal(t *testing.T) {
 func TestHDateJsonUnMarshal(t *testing.T) {
 	hdJSON := `{"hy":5783,"hm":"Kislev","hd":18}`
 	var hd hdate.HDate
-	json.Unmarshal([]byte(hdJSON), &hd)
+	err := json.Unmarshal([]byte(hdJSON), &hd)
+	assert.NoError(t, err)
 	assert.Equal(t, 5783, hd.Year())
 	assert.Equal(t, hdate.Kislev, hd.Month())
 	assert.Equal(t, 18, hd.Day())
+	// An unmarshaled date must be as usable as a constructed one, which means
+	// its R.D. has to be populated too.
+	assert.Equal(t, hdate.New(5783, hdate.Kislev, 18).Abs(), hd.Abs())
+}
+
+func TestHDateJsonUnMarshalInvalid(t *testing.T) {
+	// Out-of-range values used to be accepted silently, producing an HDate
+	// that no calendar day corresponds to.
+	for _, hdJSON := range []string{
+		`{"hy":5783,"hm":"Kislev","hd":99}`,
+		`{"hy":5783,"hm":"Kislev","hd":0}`,
+		`{"hy":0,"hm":"Kislev","hd":18}`,
+		`{"hy":5783,"hm":"Smarch","hd":18}`,
+	} {
+		var hd hdate.HDate
+		assert.Error(t, json.Unmarshal([]byte(hdJSON), &hd), "should reject %s", hdJSON)
+	}
+}
+
+func TestMonthFromNameError(t *testing.T) {
+	_, err := hdate.MonthFromName("Smarch")
+	assert.ErrorIs(t, err, hdate.ErrMonthName)
+	_, err = hdate.MonthFromName("")
+	assert.ErrorIs(t, err, hdate.ErrMonthName)
+}
+
+// TestAbsOnValue pins the R.D. being carried by the value itself: a copy of an
+// HDate, and an HDate that is not addressable, must both report the same Abs.
+func TestAbsOnValue(t *testing.T) {
+	hd := hdate.New(5769, hdate.Cheshvan, 15)
+	assert.Equal(t, int64(733359), hd.Abs())
+	assert.Equal(t, hd.Abs(), hdate.FromRD(733359).Abs())
+	cp := hd
+	assert.Equal(t, hd.Abs(), cp.Abs())
+	assert.Equal(t, hd.Abs(), hdate.New(5769, hdate.Cheshvan, 15).Abs())
 }
 
 func TestFromGregorian(t *testing.T) {
