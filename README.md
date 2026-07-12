@@ -1,7 +1,6 @@
 # hdate
 
 [![Build Status](https://github.com/hebcal/hdate/actions/workflows/go.yml/badge.svg)](https://github.com/hebcal/hdate/actions/workflows/go.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/hebcal/hdate)](https://goreportcard.com/report/github.com/hebcal/hdate)
 [![GoDoc](https://pkg.go.dev/badge/github.com/hebcal/hdate?status.svg)](https://pkg.go.dev/github.com/hebcal/hdate)
 
 Hebcal's `hdate` package converts between Hebrew and Gregorian dates.
